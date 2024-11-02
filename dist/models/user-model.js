@@ -47,6 +47,18 @@ __decorate([
         defaultValue: UserRoles.GUEST,
     })
 ], User.prototype, "role", void 0);
+__decorate([
+    Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+], User.prototype, "resetPasswordToken", void 0);
+__decorate([
+    Column({
+        type: DataType.DATE,
+        allowNull: true,
+    })
+], User.prototype, "resetPasswordExpires", void 0);
 User = __decorate([
     Table({
         tableName: "users",

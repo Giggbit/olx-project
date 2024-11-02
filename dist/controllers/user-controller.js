@@ -1,8 +1,11 @@
 import "dotenv/config";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user-model.js";
 import { v4 as uuidv4 } from "uuid";
+import nodemailer from "nodemailer";
+import { Op } from "sequelize";
+import { User } from "../models/user-model.js";
 export class UserController {
     static async register(req, res) {
         try {
@@ -26,7 +29,6 @@ export class UserController {
             res.status(500).json({ message: "Error registering user", error });
         }
     }
-    // Авторизация пользователя
     static async login(req, res) {
         try {
             const { login, password } = req.body;
@@ -34,10 +36,6 @@ export class UserController {
             if (!user) {
                 return res.status(401).json({ message: "Invalid login or password" });
             }
-            // Проверка и логирование загруженного пароля
-            console.log("Found user:", user);
-            console.log("Stored password hash:", user.password);
-            console.log("Provided password:", password);
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return res.status(401).json({ message: "Invalid login or password" });
@@ -50,10 +48,9 @@ export class UserController {
             res.status(500).json({ message: "Error logging in", error });
         }
     }
-    // Редактирование пользователя (требуется JWT)
     static async updateUser(req, res) {
         try {
-            const userId = req.user.userId; // Уточняем тип
+            const userId = req.user.userId;
             const { login, email, role } = req.body;
             const user = await User.findByPk(userId);
             if (!user) {
@@ -67,7 +64,6 @@ export class UserController {
             res.status(500).json({ message: "Error updating user", error });
         }
     }
-    // Удаление пользователя (требуется JWT)
     static async deleteUser(req, res) {
         try {
             const userId = req.user.userId; // Уточняем тип
@@ -81,6 +77,68 @@ export class UserController {
         catch (error) {
             console.error("Delete error:", error);
             res.status(500).json({ message: "Error deleting user", error });
+        }
+    }
+    static async requestPasswordReset(req, res) {
+        const { email } = req.body;
+        try {
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            const resetToken = crypto.randomBytes(20).toString("hex");
+            const resetTokenExpiry = new Date(Date.now() + 3600000);
+            await user.update({
+                resetPasswordToken: resetToken,
+                resetPasswordExpires: resetTokenExpiry,
+            });
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+            const resetLink = `https://127.0.0.1/users/reset-password?token=${resetToken}&id=${user.id}`;
+            const mailOptions = {
+                to: user.email,
+                from: process.env.EMAIL_USER,
+                subject: "Password Reset Request",
+                text: `To reset your password, please click the following link: ${resetLink}`,
+            };
+            await transporter.sendMail(mailOptions);
+            res.status(200).json({ message: "Password reset link sent to email." });
+        }
+        catch (error) {
+            console.error("Error in password reset request:", error);
+            res.status(500).json({ message: "Error in password reset request.", error });
+        }
+    }
+    static async resetPassword(req, res) {
+        const { token, id } = req.query;
+        const { newPassword } = req.body;
+        try {
+            const user = await User.findOne({
+                where: {
+                    id,
+                    resetPasswordToken: token,
+                    resetPasswordExpires: { [Op.gt]: new Date() },
+                },
+            });
+            if (!user) {
+                return res.status(400).json({ message: "Invalid or expired password reset token" });
+            }
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await user.update({
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+            });
+            res.status(200).json({ message: "Password reset successfully" });
+        }
+        catch (error) {
+            console.error("Error in password reset:", error);
+            res.status(500).json({ message: "Error resetting password.", error });
         }
     }
 }

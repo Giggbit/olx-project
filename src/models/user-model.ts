@@ -44,4 +44,16 @@ export class User extends Model {
         defaultValue: UserRoles.GUEST,
     })
     declare role:UserRoles;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+    declare resetPasswordToken: string | null;
+
+    @Column({
+        type: DataType.DATE,
+        allowNull: true,
+    })
+    declare resetPasswordExpires: Date | null;
 };
