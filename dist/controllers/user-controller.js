@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
 import { Op } from "sequelize";
+import redisClient from "../config/redis-config.js";
 import { User } from "../models/user-model.js";
 export class UserController {
     static async register(req, res) {
@@ -139,6 +140,32 @@ export class UserController {
         catch (error) {
             console.error("Error in password reset:", error);
             res.status(500).json({ message: "Error resetting password.", error });
+        }
+    }
+    static async getUserProfile(req, res) {
+        const userId = req.user.userId;
+        try {
+            const cachedProfile = await redisClient.get(`user:${userId}`);
+            if (cachedProfile) {
+                console.log("Serving from cache");
+                return res.status(200).json(JSON.parse(cachedProfile));
+            }
+            const user = await User.findByPk(userId);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            const profileData = {
+                id: user.id,
+                login: user.login,
+                email: user.email,
+                role: user.role,
+            };
+            await redisClient.set(`user:${userId}`, JSON.stringify(profileData), { EX: 3600 });
+            res.status(200).json(profileData);
+        }
+        catch (error) {
+            console.error("Error fetching user profile:", error);
+            res.status(500).json({ message: "Error fetching user profile", error });
         }
     }
 }

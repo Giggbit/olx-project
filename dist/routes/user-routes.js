@@ -11,3 +11,5 @@ userRoutes.delete("/delete", authenticateToken, UserController.deleteUser);
 // Восстановление пароля
 userRoutes.post("/request-password-reset", UserController.requestPasswordReset);
 userRoutes.post("/reset-password", UserController.resetPassword);
+// Кэширование профиля пользователя
+userRoutes.get("/profile", authenticateToken, UserController.getUserProfile);
