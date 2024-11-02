@@ -5,15 +5,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { DataType, Model, Column, Table } from "sequelize-typescript";
+import { v4 as uuidv4 } from "uuid";
+var UserRoles;
+(function (UserRoles) {
+    UserRoles["ADMIN"] = "admin";
+    UserRoles["USER"] = "user";
+    UserRoles["GUEST"] = "guest";
+    UserRoles["SELLER"] = "seller";
+})(UserRoles || (UserRoles = {}));
 let User = class User extends Model {
-    login;
-    email;
-    password;
 };
 __decorate([
     Column({
-        type: DataType.INTEGER,
-        autoIncrement: true,
+        type: DataType.UUID,
+        defaultValue: uuidv4(),
         primaryKey: true,
     })
 ], User.prototype, "id", void 0);
@@ -35,10 +40,17 @@ __decorate([
         allowNull: false,
     })
 ], User.prototype, "password", void 0);
+__decorate([
+    Column({
+        type: DataType.ENUM(...Object.values(UserRoles)),
+        allowNull: false,
+        defaultValue: UserRoles.GUEST,
+    })
+], User.prototype, "role", void 0);
 User = __decorate([
     Table({
         tableName: "users",
-        timestamps: false,
+        timestamps: true,
     })
 ], User);
 export { User };

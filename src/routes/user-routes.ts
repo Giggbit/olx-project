@@ -4,13 +4,10 @@ import { authenticateToken } from "../middleware/auth-middleware.js";
 
 export const userRoutes = Router();
 
-userRoutes.route("/")
-    .post(UserController.createUser)
-    .get(UserController.getUser)
-    .put(UserController.updateUser)
-    .delete(UserController.deleteUser)
+userRoutes.post("/register", UserController.register);
+userRoutes.post("/login", UserController.login);
 
-userRoutes.get("/protected", authenticateToken, (req, res) => {
-    res.send("Protected route by JWT");
-});
+userRoutes.put("/update", authenticateToken, UserController.updateUser);
+userRoutes.delete("/delete", authenticateToken, UserController.deleteUser);
+
     

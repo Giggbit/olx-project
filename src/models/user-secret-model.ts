@@ -1,5 +1,6 @@
-import { DataType, Model, Column, Table, ForeignKey } from "sequelize-typescript";
+import { DataType, Model, Column, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { User } from "./user-model.js";
+import { v4 as uuidv4 } from "uuid";
 
 @Table({
     tableName: "user_secrets",
@@ -8,14 +9,18 @@ import { User } from "./user-model.js";
 export class UserSecret extends Model {
     @ForeignKey(() => User)
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: false,
+        unique: true,
     })
-    userId!: number;
+    userId!: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
     secretKey!: string;
+
+    @BelongsTo(() => User)
+    user!: User;
 }

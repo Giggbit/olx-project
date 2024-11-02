@@ -8,6 +8,7 @@ import { Message } from "../models/message-model.js";
 
 export const connection = new Sequelize({
     dialect: "mysql",
+    timezone: "+01:00",
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
     username: process.env.DB_USER,

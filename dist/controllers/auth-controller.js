@@ -21,8 +21,8 @@ export const register = async (req, res) => {
 };
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ where: { email } });
+        const { login, password } = req.body;
+        const user = await User.findOne({ where: { login } });
         res.json({ message: `Password: ${password}  user.password: ${user?.password}  user: ${user}` });
         if (!user) {
             return res.status(401).json({ message: "Invalid login" });

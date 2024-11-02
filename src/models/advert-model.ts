@@ -1,6 +1,7 @@
 import { DataType, Model, Column, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { User } from "./user-model.js";
 import { Category } from "./category-models.js";
+import { v4 as uuidv4 } from 'uuid'
 
 @Table({
     tableName: "listings",
@@ -8,25 +9,25 @@ import { Category } from "./category-models.js";
 })
 export class Advert extends Model {
     @Column({
-        type: DataType.INTEGER,
-        autoIncrement: true,
+        type: DataType.UUID,
+        defaultValue: uuidv4,
         primaryKey: true,
     })
-    declare id: number;
+    declare id: string;
 
     @ForeignKey(() => User)
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: false,
     })
-    userId!: number;
+    userId!: string;
 
     @ForeignKey(() => Category)
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: false,
     })
-    categoryId!: number;
+    categoryId!: string;
 
     @Column({
         type: DataType.STRING,

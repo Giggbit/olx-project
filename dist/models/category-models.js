@@ -5,14 +5,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { DataType, Model, Column, Table } from "sequelize-typescript";
+import { v4 as uuidv4 } from 'uuid';
 let Category = class Category extends Model {
     name;
     parentId;
 };
 __decorate([
     Column({
-        type: DataType.INTEGER,
-        autoIncrement: true,
+        type: DataType.UUID,
+        defaultValue: uuidv4,
         primaryKey: true,
     })
 ], Category.prototype, "id", void 0);

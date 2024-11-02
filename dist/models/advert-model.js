@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { DataType, Model, Column, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { User } from "./user-model.js";
 import { Category } from "./category-models.js";
+import { v4 as uuidv4 } from 'uuid';
 let Advert = class Advert extends Model {
     userId;
     categoryId;
@@ -20,22 +21,22 @@ let Advert = class Advert extends Model {
 };
 __decorate([
     Column({
-        type: DataType.INTEGER,
-        autoIncrement: true,
+        type: DataType.UUID,
+        defaultValue: uuidv4,
         primaryKey: true,
     })
 ], Advert.prototype, "id", void 0);
 __decorate([
     ForeignKey(() => User),
     Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: false,
     })
 ], Advert.prototype, "userId", void 0);
 __decorate([
     ForeignKey(() => Category),
     Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: false,
     })
 ], Advert.prototype, "categoryId", void 0);

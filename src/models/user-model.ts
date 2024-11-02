@@ -1,32 +1,47 @@
 import { DataType, Model, Column, Table } from "sequelize-typescript";
+import { v4 as uuidv4 } from "uuid";
+
+enum UserRoles {
+    ADMIN = "admin",
+    USER = "user",
+    GUEST = "guest",
+    SELLER = "seller",  
+}
 
 @Table({
     tableName: "users",
-    timestamps: false,
+    timestamps: true,
 })
 export class User extends Model {
     @Column({
-        type: DataType.INTEGER,
-        autoIncrement: true,
+        type: DataType.UUID,
+        defaultValue: uuidv4(),
         primaryKey: true,
     })
-    declare id: number;
+    declare id:string;
 
     @Column({
         type: DataType.STRING(30),
         allowNull: false,
     })
-    login!: string;
+    declare login: string;
 
     @Column({
         type: DataType.STRING(30),
         allowNull: false,
     })
-    email!: string;
+    declare email: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
-    password!: string;
+    declare password: string;
+
+    @Column({
+        type: DataType.ENUM(...Object.values(UserRoles)),
+        allowNull: false,
+        defaultValue: UserRoles.GUEST,
+    })
+    declare role:UserRoles;
 };

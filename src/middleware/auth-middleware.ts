@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -11,13 +11,13 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         return;
     }
 
-    jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
         if (err) {
             res.status(403).json({ message: "Invalid or expired token" });
             return;
         }
-        
-        req.user = user;
+
+        req.user = decoded as JwtPayload & { userId: string };
         next();
     });
 };

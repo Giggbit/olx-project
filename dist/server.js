@@ -5,10 +5,9 @@ import path from "node:path";
 import https from "node:https";
 import { connection } from "./config/config.js";
 import { userRoutes } from "./routes/user-routes.js";
-import { authRoutes } from "./routes/auth-routes.js";
 const PORT = process.env.PORT;
 const __dirname = import.meta.dirname;
-connection.sync().then(() => {
+connection.sync({ alter: true }).then(() => {
     const app = express();
     const options = {
         key: fs.readFileSync(path.join(__dirname, "..", "cert", "key.pem")),
@@ -16,7 +15,6 @@ connection.sync().then(() => {
     };
     app.use(express.json());
     app.use("/users", userRoutes);
-    app.use("/users/auth", authRoutes);
     https.createServer(options, app).listen(PORT, () => console.log(`Server is running https://127.0.0.1`));
 }).catch((err) => {
     console.error(err);
