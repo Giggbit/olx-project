@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Advert } from "../models/advert-model.js";
 import { Category } from "../models/category-models.js";
+import { Op } from "sequelize";
 
 export class AdvertController {
     static async createAdvert(req: Request, res: Response):Promise<any> {
@@ -98,6 +99,53 @@ export class AdvertController {
         catch (error) {
             console.error("Error deleting advert:", error);
             res.status(500).json({ message: "Error deleting advert", error });
+        }
+    }
+
+    static async searchAdverts(req: Request, res: Response):Promise<any> {
+        try {
+            const {
+                category,
+                location,
+                priceMin,
+                priceMax,
+                keyword,
+                sortBy = "createdAt",
+                order = "DESC",
+            } = req.query;
+
+            const whereConditions: any = {};
+            if (category) {
+                whereConditions.category = category;
+            }
+            if (location) {
+                whereConditions.location = location;
+            }
+            if (priceMin) {
+                whereConditions.price = { [Op.gte]: parseFloat(priceMin as string) };
+            }
+            if (priceMax) {
+                whereConditions.price = {
+                    ...whereConditions.price,
+                    [Op.lte]: parseFloat(priceMax as string),
+                };
+            }
+            if (keyword) {
+                whereConditions[Op.or] = [
+                    { title: { [Op.like]: `%${keyword}%` } },
+                    { description: { [Op.like]: `%${keyword}%` } },
+                ];
+            }
+
+            const adverts = await Advert.findAll({
+                where: whereConditions,
+                order: [[sortBy as string, order as string]],
+            });
+            res.status(200).json(adverts);
+        } 
+        catch (error) {
+            console.error("Error searching adverts:", error);
+            res.status(500).json({ message: "Error searching adverts", error });
         }
     }
 }

@@ -9,3 +9,4 @@ advertRoutes.get("/:id", AdvertController.getAdvertById);
 advertRoutes.get("/", AdvertController.getAllAdverts);
 advertRoutes.put("/:id", authenticateToken, AdvertController.updateAdvert);
 advertRoutes.delete("/:id", authenticateToken, AdvertController.deleteAdvert);
+advertRoutes.get("/search", AdvertController.searchAdverts);
