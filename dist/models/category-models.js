@@ -7,8 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { DataType, Model, Column, Table } from "sequelize-typescript";
 import { v4 as uuidv4 } from 'uuid';
 let Category = class Category extends Model {
-    name;
-    parentId;
 };
 __decorate([
     Column({
@@ -25,7 +23,7 @@ __decorate([
 ], Category.prototype, "name", void 0);
 __decorate([
     Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: true,
     })
 ], Category.prototype, "parentId", void 0);

@@ -9,13 +9,6 @@ import { User } from "./user-model.js";
 import { Advert } from "./advert-model.js";
 import { v4 as uuidv4 } from 'uuid';
 let Message = class Message extends Model {
-    senderId;
-    receiverId;
-    advertId;
-    content;
-    sender;
-    receiver;
-    listing;
 };
 __decorate([
     Column({
@@ -29,7 +22,6 @@ __decorate([
     Column({
         type: DataType.UUID,
         allowNull: false,
-        unique: true,
     })
 ], Message.prototype, "senderId", void 0);
 __decorate([
@@ -37,7 +29,6 @@ __decorate([
     Column({
         type: DataType.UUID,
         allowNull: false,
-        unique: true,
     })
 ], Message.prototype, "receiverId", void 0);
 __decorate([
@@ -45,7 +36,6 @@ __decorate([
     Column({
         type: DataType.UUID,
         allowNull: false,
-        unique: true,
     })
 ], Message.prototype, "advertId", void 0);
 __decorate([
@@ -61,8 +51,8 @@ __decorate([
     BelongsTo(() => User, "receiverId")
 ], Message.prototype, "receiver", void 0);
 __decorate([
-    BelongsTo(() => Advert)
-], Message.prototype, "listing", void 0);
+    BelongsTo(() => Advert, "advertId")
+], Message.prototype, "advert", void 0);
 Message = __decorate([
     Table({
         tableName: "messages",

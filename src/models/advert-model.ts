@@ -4,7 +4,7 @@ import { Category } from "./category-models.js";
 import { v4 as uuidv4 } from 'uuid'
 
 @Table({
-    tableName: "listings",
+    tableName: "adverts",
     timestamps: true,
 })
 export class Advert extends Model {
@@ -20,48 +20,48 @@ export class Advert extends Model {
         type: DataType.UUID,
         allowNull: false,
     })
-    userId!: string;
+    declare userId: string;
 
     @ForeignKey(() => Category)
     @Column({
         type: DataType.UUID,
         allowNull: false,
     })
-    categoryId!: string;
+    declare categoryId: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
-    title!: string;
+    declare title: string;
 
     @Column({
         type: DataType.TEXT,
         allowNull: false,
     })
-    description!: string;
+    declare description: string;
 
     @Column({
         type: DataType.FLOAT,
         allowNull: false,
     })
-    price!: number;
+    declare price: number;
 
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
-    location?: string;
+    declare location?: string;
 
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: true,
     })
-    isAvailable!: boolean;
+    declare isAvailable: boolean;
 
     @BelongsTo(() => User)
-    user!: User;
+    declare user: User;
 
     @BelongsTo(() => Category)
-    category!: Category;
+    declare category: Category;
 }

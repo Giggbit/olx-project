@@ -9,15 +9,6 @@ import { User } from "./user-model.js";
 import { Category } from "./category-models.js";
 import { v4 as uuidv4 } from 'uuid';
 let Advert = class Advert extends Model {
-    userId;
-    categoryId;
-    title;
-    description;
-    price;
-    location;
-    isAvailable;
-    user;
-    category;
 };
 __decorate([
     Column({
@@ -78,7 +69,7 @@ __decorate([
 ], Advert.prototype, "category", void 0);
 Advert = __decorate([
     Table({
-        tableName: "listings",
+        tableName: "adverts",
         timestamps: true,
     })
 ], Advert);

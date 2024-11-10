@@ -17,11 +17,11 @@ export class Category extends Model {
         type: DataType.STRING,
         allowNull: false,
     })
-    name!: string;
+    declare name: string;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.UUID,
         allowNull: true,
     })
-    parentId?: number;
+    declare parentId?: string;
 }
