@@ -8,6 +8,7 @@ import { userRoutes } from "./routes/user-routes.js";
 import { messageRoutes } from "./routes/message-routes.js";
 import { advertRoutes } from "./routes/advert-routes.js";
 import { categoryRoutes } from "./routes/category-routes.js";
+import { engine } from "express-handlebars";
 
 const PORT = process.env.PORT;
 const __dirname = import.meta.dirname;
@@ -18,6 +19,7 @@ connection.sync({alter: true}).then(() => {
         key: fs.readFileSync(path.join(__dirname, "..", "cert", "key.pem")),
         cert: fs.readFileSync(path.join(__dirname, "..", "cert", "cert.pem")),
     };
+
     app.use(express.json());
     app.use("/users", userRoutes);
     app.use("/messages", messageRoutes);

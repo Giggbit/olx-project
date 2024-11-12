@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { Advert } from "../models/advert-model.js";
 import { Category } from "../models/category-models.js";
 import { Op } from "sequelize";
+import { AdvertImage } from "../models/advert-image-model.js";
 
 export class AdvertController {
     static async createAdvert(req: Request, res: Response):Promise<any> {
         try {
             const userId = (req.user as { userId: string }).userId;
             const { title, description, categoryId, price, location } = req.body;
+            const files = req.files as Express.Multer.File[];
 
             const category = await Category.findByPk(categoryId);
             if (!category) {
@@ -22,6 +24,14 @@ export class AdvertController {
                 price,
                 location,
             });
+
+            if (files) {
+                const imagePaths = files.map((file) => ({
+                    advertId: advert.id,
+                    imagePath: file.path,
+                }));
+                await AdvertImage.bulkCreate(imagePaths);
+            }
             res.status(201).json({ message: "Advert created successfully", advert });
         } 
         catch (error) {

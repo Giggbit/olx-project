@@ -1,10 +1,13 @@
 import { Advert } from "../models/advert-model.js";
 import { Category } from "../models/category-models.js";
+import { Op } from "sequelize";
+import { AdvertImage } from "../models/advert-image-model.js";
 export class AdvertController {
     static async createAdvert(req, res) {
         try {
             const userId = req.user.userId;
             const { title, description, categoryId, price, location } = req.body;
+            const files = req.files;
             const category = await Category.findByPk(categoryId);
             if (!category) {
                 return res.status(404).json({ message: "Category not found" });
@@ -17,6 +20,13 @@ export class AdvertController {
                 price,
                 location,
             });
+            if (files) {
+                const imagePaths = files.map((file) => ({
+                    advertId: advert.id,
+                    imagePath: file.path,
+                }));
+                await AdvertImage.bulkCreate(imagePaths);
+            }
             res.status(201).json({ message: "Advert created successfully", advert });
         }
         catch (error) {
@@ -85,6 +95,42 @@ export class AdvertController {
         catch (error) {
             console.error("Error deleting advert:", error);
             res.status(500).json({ message: "Error deleting advert", error });
+        }
+    }
+    static async searchAdverts(req, res) {
+        try {
+            const { category, location, priceMin, priceMax, keyword, sortBy = "createdAt", order = "DESC", } = req.query;
+            const whereConditions = {};
+            if (category) {
+                whereConditions.category = category;
+            }
+            if (location) {
+                whereConditions.location = location;
+            }
+            if (priceMin) {
+                whereConditions.price = { [Op.gte]: parseFloat(priceMin) };
+            }
+            if (priceMax) {
+                whereConditions.price = {
+                    ...whereConditions.price,
+                    [Op.lte]: parseFloat(priceMax),
+                };
+            }
+            if (keyword) {
+                whereConditions[Op.or] = [
+                    { title: { [Op.like]: `%${keyword}%` } },
+                    { description: { [Op.like]: `%${keyword}%` } },
+                ];
+            }
+            const adverts = await Advert.findAll({
+                where: whereConditions,
+                order: [[sortBy, order]],
+            });
+            res.status(200).json(adverts);
+        }
+        catch (error) {
+            console.error("Error searching adverts:", error);
+            res.status(500).json({ message: "Error searching adverts", error });
         }
     }
 }
