@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { DataType, Model, Column, Table } from "sequelize-typescript";
 import { v4 as uuidv4 } from "uuid";
-var UserRoles;
+export var UserRoles;
 (function (UserRoles) {
     UserRoles["ADMIN"] = "admin";
     UserRoles["USER"] = "user";

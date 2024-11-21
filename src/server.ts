@@ -8,7 +8,7 @@ import { userRoutes } from "./routes/user-routes.js";
 import { messageRoutes } from "./routes/message-routes.js";
 import { advertRoutes } from "./routes/advert-routes.js";
 import { categoryRoutes } from "./routes/category-routes.js";
-import { engine } from "express-handlebars";
+import { adminRoutes } from "./routes/admin-routes.js";
 
 const PORT = process.env.PORT;
 const __dirname = import.meta.dirname;
@@ -25,6 +25,7 @@ connection.sync({alter: true}).then(() => {
     app.use("/messages", messageRoutes);
     app.use("/adverts", advertRoutes);
     app.use("/categories", categoryRoutes);
+    app.use("/admin", adminRoutes);
 
     https.createServer(options, app).listen(PORT, () => console.log(`Server is running https://127.0.0.1`));
 

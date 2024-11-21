@@ -133,4 +133,20 @@ export class AdvertController {
             res.status(500).json({ message: "Error searching adverts", error });
         }
     }
+    static async changeAdverStatus(req, res) {
+        try {
+            const { advertId, status } = req.body;
+            const advert = await Advert.findByPk(advertId);
+            if (!advert) {
+                return res.status(404).json({ message: "Advert not found" });
+            }
+            advert.isAvailable = status;
+            await advert.save();
+            res.status(200).json({ message: "Advert status updated successfully", advert });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error updating advert status" });
+        }
+    }
 }

@@ -1,7 +1,7 @@
 import { DataType, Model, Column, Table } from "sequelize-typescript";
 import { v4 as uuidv4 } from "uuid";
 
-enum UserRoles {
+export enum UserRoles {
     ADMIN = "admin",
     USER = "user",
     GUEST = "guest",

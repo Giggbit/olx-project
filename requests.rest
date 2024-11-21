@@ -1,0 +1,168 @@
+# 1. Пользователи (users)
+### Регистрация пользователя
+POST https://127.0.0.1/users/register
+Content-Type: application/json
+
+{
+    "login": "user",
+    "email": "danya19981017@gmail.com",
+    "password": "password"
+}
+
+###
+
+### Авторизация
+POST https://127.0.0.1/users/login
+Content-Type: application/json
+
+{
+    "login": "user",
+    "password": "password"
+}
+
+###
+
+### Обновление пользователя
+PUT https://127.0.0.1/users/update
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+    "login": "updateduser",
+    "email": "danya19981017@gmail.com",
+    "password": "newpassword"
+}
+
+###
+
+### Удаление пользователя
+DELETE https://127.0.0.1/users/delete
+Content-Type: application/json
+Authorization: Bearer 
+
+###
+
+### Запрос на восстановление пароля
+POST https://127.0.0.1/users/request-password-reset
+Content-Type: application/json
+
+{
+    "email": "danya19981017@gmail.com"
+}
+
+###
+
+### Сброс пароля
+POST https://127.0.0.1/users/reset-password?token=768bc404c883c5f4e500e4827fda554285cbafa9&id=87d04f17-a7b7-42c0-aac4-fd094738f33b
+Content-Type: application/json
+
+{
+    "newPassword": "verysecurepassword"
+}
+
+###
+
+### Получение профиля пользователя
+GET https://127.0.0.1/users/profile
+Content-Type: application/json
+Authorization: Bearer <>
+
+###
+
+# 2. Объявления
+### Получение всех объявлений
+GET https://127.0.0.1/adverts
+Content-Type: application/json
+
+###
+
+### Получение объявления по ID
+GET https://127.0.0.1/adverts/<advert_id>
+Content-Type: application/json
+
+###
+
+### Обновление объявления
+PUT https://127.0.0.1/adverts/<advert_id>
+Content-Type: application/json
+Authorization: Bearer <>
+
+{
+    "title": "Updated Advert Title",
+    "description": "Updated description",
+    "price": 150.00,
+    "categoryId": "<updated_category_id>"
+}
+
+###
+
+### Удаление объявления
+DELETE https://127.0.0.1/adverts/<advert_id>
+Content-Type: application/json
+Authorization: Bearer <>
+
+###
+
+# 3. Сообщения
+### Создание сообщения
+POST https://127.0.0.1/messages
+Content-Type: application/json
+Authorization: Bearer <>
+
+{
+    "senderId": "<sender_user_id>",
+    "receiverId": "<receiver_user_id>",
+    "content": "Hello! I'm interested in your advert."
+}
+
+###
+
+### Получение всех сообщений пользователя
+GET https://127.0.0.1/messages
+Content-Type: application/json
+Authorization: Bearer <>
+
+###
+
+### Получение сообщений по объявлению 
+GET https://127.0.0.1/messages/<advert_id>
+Content-Type: application/json
+Authorization: Bearer <>
+
+###
+
+# 4. Категории
+### Создание категории
+POST https://127.0.0.1/categories
+Content-Type: application/json
+Authorization: Bearer <admin_token>
+
+{
+    "name": "New Category"
+}
+
+###
+
+### Получение всех категорий
+GET https://127.0.0.1/categories
+Content-Type: application/json
+
+###
+
+### Обновление категории
+PUT https://127.0.0.1/categories/<category_id>
+Content-Type: application/json
+Authorization: Bearer <admin_token>
+
+{
+    "name": "Updated Category Name"
+}
+
+###
+
+### Удаление категории
+DELETE https://127.0.0.1/categories/<category_id>
+Content-Type: application/json
+Authorization: Bearer <admin_token>
+
+###
