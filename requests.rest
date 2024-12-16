@@ -16,8 +16,8 @@ POST https://127.0.0.1/users/login
 Content-Type: application/json
 
 {
-    "login": "user",
-    "password": "password"
+    "login": "admin",
+    "password": "admin"
 }
 
 ###
@@ -111,7 +111,7 @@ Authorization: Bearer <>
 
 {
     "senderId": "<sender_user_id>",
-    "receiverId": "<receiver_user_id>",
+    "receiverId": "87d04f17-a7b7-42c0-aac4-fd094738f33b",
     "content": "Hello! I'm interested in your advert."
 }
 
@@ -135,10 +135,10 @@ Authorization: Bearer <>
 ### Создание категории
 POST https://127.0.0.1/categories
 Content-Type: application/json
-Authorization: Bearer <admin_token>
+Authorization: Bearer 
 
 {
-    "name": "New Category"
+    "name": "New Category2"
 }
 
 ###
@@ -146,6 +146,7 @@ Authorization: Bearer <admin_token>
 ### Получение всех категорий
 GET https://127.0.0.1/categories
 Content-Type: application/json
+Authorization: Bearer 
 
 ###
 

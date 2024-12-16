@@ -1,22 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/user-model.js";
+import jwt from "jsonwebtoken";
 import { UserRoles } from "../models/user-model.js";
 
-export const isAdmin = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
+export const isAdmin = (req: Request, res: Response, next: NextFunction):any => {
     try {
-        const { userId } = req.body;
-        if (!userId) {
-            return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+        const authHeader = req.headers["authorization"];
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Token not provided or invalid" });
         }
 
-        const user = await User.findByPk(userId);
-        if (!user || user.role !== UserRoles.ADMIN) {
-            return res.status(403).json({ message: "Forbidden: Admin access only" });
+        const token = authHeader.split(" ")[1];
+        const secret = process.env.JWT_SECRET || "f1c8437fb56bbd8c7cd";
+        const decoded = jwt.verify(token, secret) as { role?: UserRoles };
+        if (!decoded.role || decoded.role !== UserRoles.ADMIN) {
+            return res.status(403).json({ message: "Access denied. Admins only" });
         }
         next();
     } 
     catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error during admin check" });
+        return res.status(403).json({ message: "Invalid or expired token", error: error });
     }
 };
